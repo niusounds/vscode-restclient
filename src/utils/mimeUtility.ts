@@ -102,6 +102,14 @@ export class MimeUtility {
         return this.parse(contentTypeString).essence === 'text/css';
     }
 
+    public static isProtobuf(contentTypeString: string | undefined): boolean {
+        if (!contentTypeString) {
+            return false;
+        }
+
+        return this.parse(contentTypeString).essence === 'application/x-protobuf';
+    }
+
     public static isMultiPartMixed(contentTypeString: string | undefined): boolean {
         if (!contentTypeString) {
             return false;

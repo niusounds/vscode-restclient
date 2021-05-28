@@ -4,6 +4,7 @@ import { window } from 'vscode';
 import { MimeUtility } from './mimeUtility';
 import { isJSONString } from './misc';
 const pd = require('pretty-data').pd;
+const childProcess = require('child_process');
 
 export class ResponseFormatUtility {
 
@@ -31,6 +32,12 @@ export class ResponseFormatUtility {
                 body = pd.xml(body);
             } else if (MimeUtility.isCSS(contentType)) {
                 body = pd.css(body);
+            } else if (MimeUtility.isProtobuf(contentType)) {
+                try {
+                    body = childProcess.execSync('protoc --decode_raw', { input: body });
+                } catch (e) {
+                    body = 'protoc is not found in PATH. Cannot decode protobuf binary.';
+                }
             } else {
                 // Add this for the case that the content type of response body is not very accurate #239
                 if (isJSONString(body)) {
